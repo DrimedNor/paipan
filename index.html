@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>八字排盘</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23A63D2F'/%3E%3Ctext x='32' y='46' font-size='36' text-anchor='middle' fill='white' font-family='serif'%3E%E7%9B%98%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">盘</span>
+    <span class="brand-name">八字排盘</span>
+  </div>
+  <nav class="nav" role="navigation">
+    <button type="button" class="nav-btn active" data-view="input">排盘</button>
+    <button type="button" class="nav-btn" data-view="rules">规则设置</button>
+    <button type="button" class="nav-btn" data-view="records">历史记录</button>
+  </nav>
+</header>
+
+<main class="main">
+
+  <!-- ========== 输入视图 ========== -->
+  <section id="view-input" class="view active">
+    <form id="input-form" novalidate>
+      <div class="panel">
+        <h2 class="panel-title">出生信息</h2>
+
+        <div class="field">
+          <label for="f-name">姓名 / 排盘备注（选填）</label>
+          <input id="f-name" type="text" maxlength="20" placeholder="如：张三 / 帮我排一下">
+        </div>
+
+        <div class="field">
+          <span class="label">性别（大运顺逆规则必需）</span>
+          <div class="radio-row">
+            <label class="radio"><input type="radio" name="gender" value="1" checked><span>男</span></label>
+            <label class="radio"><input type="radio" name="gender" value="0"><span>女</span></label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="f-dateType">日期类型</label>
+          <select id="f-dateType">
+            <option value="solar">公历（阳历）</option>
+            <option value="lunar">农历（阴历，含闰月）</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <span class="label">出生日期</span>
+          <div class="row">
+            <input id="f-y" class="num" type="number" min="1900" max="2100" placeholder="年" aria-label="年">
+            <select id="f-m" aria-label="月"></select>
+            <select id="f-d" aria-label="日"></select>
+          </div>
+          <div id="leap-wrap" class="hidden"><label class="checkbox"><input type="checkbox" id="f-leap"> 闰月（该农历月为闰月时勾选）</label></div>
+        </div>
+
+        <div class="field">
+          <span class="label">出生时间（精确到分钟）</span>
+          <div class="row">
+            <select id="f-h" aria-label="时"></select>
+            <select id="f-min" aria-label="分"></select>
+          </div>
+        </div>
+
+        <div class="field">
+          <span class="label">出生地（选填；选择时间校正时必须填经度）</span>
+          <div class="row">
+            <input id="f-place" type="text" placeholder="地名，如：成都" aria-label="出生地">
+            <input id="f-lon" class="num" type="number" step="0.01" min="-180" max="180" placeholder="经度（东经为正）" aria-label="经度">
+          </div>
+          <p class="hint">校正时按出生地经度与时区标准经线计算，不会简单地加减固定小时。</p>
+        </div>
+
+        <div class="field">
+          <label for="f-correction">出生时间处理</label>
+          <select id="f-correction">
+            <option value="none">不校正（按所填钟表时间）</option>
+            <option value="mean">校正为地方平太阳时</option>
+            <option value="true">校正为真太阳时</option>
+          </select>
+        </div>
+
+        <button type="submit" id="btn-chart" class="btn primary">开始排盘</button>
+        <div id="input-error" class="error hidden" role="alert"></div>
+      </div>
+    </form>
+    <p class="disclaimer">本工具为历法与传统文化排盘工具。命理内容属于中国传统文化体系，不构成科学证实的预测结论。</p>
+  </section>
+
+  <!-- ========== 结果视图 ========== -->
+  <section id="view-chart" class="view">
+    <div id="chart-head" class="chart-head"></div>
+    <div id="warnings" class="warnings"></div>
+    <div id="pillars" class="pillars"></div>
+
+    <div class="panel">
+      <h2 class="panel-title">辅助信息</h2>
+      <div id="aux-info" class="aux-grid"></div>
+    </div>
+
+    <div class="panel">
+      <h2 class="panel-title">大运</h2>
+      <div id="dayun-info"></div>
+    </div>
+
+    <div class="panel">
+      <h2 class="panel-title">五行统计（多口径，仅描述命盘结构）</h2>
+      <div id="five-info"></div>
+    </div>
+
+    <details class="panel basis">
+      <summary class="panel-title basis-summary">排盘依据（展开查看本盘实际采用的规则）</summary>
+      <div id="basis-info"></div>
+    </details>
+
+    <div class="actions">
+      <button type="button" id="btn-copy" class="btn">复制排盘文字</button>
+      <button type="button" id="btn-print" class="btn">打印 / 另存为 PDF</button>
+      <button type="button" id="btn-save" class="btn">保存到历史记录</button>
+    </div>
+  </section>
+
+  <!-- ========== 规则设置 ========== -->
+  <section id="view-rules" class="view">
+    <form id="rules-form" class="panel">
+      <h2 class="panel-title">排盘规则设置</h2>
+      <div class="field">
+        <label for="r-yearBoundary">年柱年界</label>
+        <select id="r-yearBoundary"></select>
+        <p class="hint rule-desc" id="desc-yearBoundary"></p>
+      </div>
+      <div class="field">
+        <label for="r-dayBoundary">日界（换日）与子时规则</label>
+        <select id="r-dayBoundary"></select>
+        <p class="hint rule-desc" id="desc-dayBoundary"></p>
+      </div>
+      <div class="field">
+        <label for="r-changShengRule">十二长生规则</label>
+        <select id="r-changShengRule"></select>
+        <p class="hint rule-desc" id="desc-changShengRule"></p>
+      </div>
+      <div class="field">
+        <label for="r-daYunRule">大运起运折算</label>
+        <select id="r-daYunRule"></select>
+        <p class="hint rule-desc" id="desc-daYunRule"></p>
+      </div>
+      <div class="field">
+        <label for="r-timezoneOffset">时区（UTC+ 小时数，决定标准经线）</label>
+        <select id="r-timezoneOffset"></select>
+        <p class="hint">标准经线 = 时区小时数 × 15°（如 UTC+8 → 120°E），用于时间校正。</p>
+      </div>
+      <button type="submit" class="btn primary">保存规则</button>
+      <p class="hint">保存后若当前已有命盘，将自动按新规则重新计算；历史记录保留其生成时的规则快照，不受本次修改影响。</p>
+    </form>
+  </section>
+
+  <!-- ========== 历史记录 ========== -->
+  <section id="view-records" class="view">
+    <div class="panel">
+      <h2 class="panel-title">排盘记录（仅保存在本机浏览器）</h2>
+      <p id="records-empty" class="hint">暂无记录。排盘后可点击「保存到历史记录」。</p>
+      <ul id="records-list" class="records"></ul>
+      <button type="button" id="btn-records-clear" class="btn danger">清空记录</button>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  本地运行 · 数据仅存于本机浏览器 · 历法引擎 lunar-javascript（MIT）
+</footer>
+
+<script src="js/vendor/lunar.js"></script>
+<script src="js/engine/constants.js"></script>
+<script src="js/engine/ganzhi.js"></script>
+<script src="js/engine/wuxing.js"></script>
+<script src="js/engine/shishen.js"></script>
+<script src="js/engine/hiddenGan.js"></script>
+<script src="js/engine/nayin.js"></script>
+<script src="js/engine/xunkong.js"></script>
+<script src="js/engine/changsheng.js"></script>
+<script src="js/engine/tigerDun.js"></script>
+<script src="js/engine/solarTime.js"></script>
+<script src="js/engine/rules.js"></script>
+<script src="js/engine/daYun.js"></script>
+<script src="js/engine/chart.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

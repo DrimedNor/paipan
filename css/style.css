@@ -1,0 +1,227 @@
+/* 八字排盘 · 界面样式
+   基调：纸墨感（宣纸米底 + 墨色 + 朱砂强调），五行色仅作辅助点缀，文字始终清晰可辨。
+   移动优先：375px 起写，桌面在 min-width 断点扩展。 */
+:root {
+  --bg: #F4F0E6;
+  --paper: #FBF8F0;
+  --ink: #2A2620;
+  --ink-soft: #5C554A;
+  --line: #D8D0BF;
+  --accent: #A63D2F;   /* 朱砂 */
+  --accent-soft: #F3E4DE;
+  --deep: #22384B;     /* 藏青 */
+  --mu: #2F6B4F;       /* 木 */
+  --huo: #B23A3A;      /* 火 */
+  --tu: #8A6D3B;       /* 土 */
+  --jin: #B08D2F;      /* 金 */
+  --shui: #3A6B8F;     /* 水 */
+  --danger: #A63D2F;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* ---------- 顶栏 ---------- */
+.topbar {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--deep);
+  color: #F6F1E7;
+}
+.brand { display: flex; align-items: center; gap: 8px; }
+.brand-mark {
+  width: 28px; height: 28px; border-radius: 6px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--accent); color: #FFF;
+  font-family: "Songti SC", "SimSun", serif; font-size: 16px;
+}
+.brand-name { font-family: "Songti SC", "SimSun", serif; font-size: 17px; letter-spacing: 1px; }
+.nav { display: flex; gap: 4px; }
+.nav-btn {
+  border: none; background: transparent; color: #D9D2C2;
+  padding: 6px 10px; border-radius: 6px; font-size: 14px; cursor: pointer;
+}
+.nav-btn.active { background: rgba(255,255,255,.14); color: #FFF; }
+
+.main { max-width: 1080px; margin: 0 auto; padding: 16px 14px 40px; }
+.view { display: none; }
+.view.active { display: block; }
+
+/* ---------- 面板与表单 ---------- */
+.panel {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 14px;
+}
+.panel-title {
+  margin: 0 0 12px;
+  font-family: "Songti SC", "SimSun", serif;
+  font-size: 16px; color: var(--deep);
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 8px;
+}
+.field { margin-bottom: 14px; }
+.field .label, .field > label { display: block; font-size: 14px; color: var(--ink-soft); margin-bottom: 4px; }
+input, select {
+  font-size: 16px; /* ≥16px 避免移动端聚焦缩放 */
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #FFFDF7;
+  color: var(--ink);
+  width: 100%;
+}
+input.num, select { width: auto; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; }
+.row input, .row select { flex: 1; min-width: 0; }
+.radio-row { display: flex; gap: 16px; }
+.radio { display: inline-flex; align-items: center; gap: 6px; font-size: 15px; cursor: pointer; }
+.radio input, .checkbox input { width: auto; }
+.hint { font-size: 12.5px; color: var(--ink-soft); margin: 4px 0 0; }
+.rule-desc { min-height: 1.2em; }
+.hidden { display: none !important; }
+.error {
+  margin-top: 10px; padding: 10px 12px;
+  background: #FBEAE5; border: 1px solid #E0B4A8; border-radius: 6px;
+  color: #8C2F22; font-size: 14px;
+}
+.btn {
+  border: 1px solid var(--line); background: #FFFDF7; color: var(--ink);
+  padding: 9px 16px; border-radius: 6px; font-size: 15px; cursor: pointer;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #FFF; }
+.btn.primary:hover { background: #8F352A; color: #FFF; }
+.btn.danger { color: var(--danger); }
+.disclaimer {
+  font-size: 12.5px; color: var(--ink-soft); text-align: center; margin: 18px 0 0;
+}
+
+/* ---------- 命盘结果 ---------- */
+.chart-head { margin-bottom: 14px; }
+.chart-head h2 {
+  margin: 0; font-family: "Songti SC", "SimSun", serif; font-size: 19px; color: var(--deep);
+}
+.chart-head .sub { color: var(--ink-soft); font-size: 13px; margin-top: 2px; }
+
+.warnings { margin-bottom: 14px; }
+.warn {
+  padding: 9px 12px; margin-bottom: 8px;
+  background: #FBF3DC; border: 1px solid #E4CF9A; border-radius: 6px;
+  font-size: 13.5px; color: #6E5310;
+}
+
+.pillars {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  margin-bottom: 18px;
+}
+.pillar {
+  background: var(--paper); border: 1px solid var(--line); border-radius: 8px;
+  padding: 12px 10px; text-align: center;
+}
+.pillar .p-label {
+  font-size: 12px; color: var(--ink-soft); letter-spacing: 2px; margin-bottom: 6px;
+}
+.pillar .p-gan {
+  font-family: "Songti SC", "SimSun", serif;
+  font-size: 40px; line-height: 1.15; color: var(--ink);
+  display: flex; align-items: baseline; justify-content: center; gap: 8px;
+}
+.pillar .p-shi { font-size: 13px; color: var(--ink-soft); margin-bottom: 6px; min-height: 1.4em; }
+.pillar .p-zhi { font-family: "Songti SC", "SimSun", serif; font-size: 30px; line-height: 1.2; }
+.pillar .p-hide { margin-top: 6px; font-size: 13px; }
+.pillar .p-hide .hg { display: inline-block; margin: 2px 3px; }
+.pillar .p-meta { margin-top: 8px; border-top: 1px dashed var(--line); padding-top: 6px; font-size: 12.5px; color: var(--ink-soft); }
+.pillar.day {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+  background: #FBF6F1;
+}
+.pillar.day .p-gan { color: var(--accent); }
+.day-badge {
+  display: inline-block; margin-left: 6px;
+  font-size: 11px; color: #FFF; background: var(--accent);
+  border-radius: 4px; padding: 1px 6px; vertical-align: middle;
+}
+
+/* 五行点缀色（仅辅助，信息不依赖颜色） */
+.wx-mu { color: var(--mu); }
+.wx-huo { color: var(--huo); }
+.wx-tu { color: var(--tu); }
+.wx-jin { color: var(--jin); }
+.wx-shui { color: var(--shui); }
+
+/* ---------- 辅助信息 / 大运 / 五行 ---------- */
+.aux-grid { display: grid; grid-template-columns: 1fr; gap: 6px 18px; font-size: 14px; }
+.aux-grid .kv { display: flex; gap: 8px; }
+.aux-grid .k { color: var(--ink-soft); flex: 0 0 6.2em; }
+.dayun-table, .five-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.dayun-table th, .dayun-table td, .five-table th, .five-table td {
+  border: 1px solid var(--line); padding: 6px 8px; text-align: center;
+}
+.dayun-table th, .five-table th { background: #F1EBDD; font-weight: normal; color: var(--ink-soft); }
+.dayun-table .pre td { color: var(--ink-soft); }
+.five-block { margin-bottom: 10px; }
+.five-block h4 { margin: 0 0 4px; font-size: 14px; color: var(--deep); font-weight: 600; }
+.five-bar { display: flex; gap: 4px; margin-top: 4px; }
+.five-bar span {
+  flex: 1; text-align: center; font-size: 12px; color: var(--ink-soft);
+  border-radius: 4px; padding: 3px 0;
+}
+.five-bar span.mu { background: #E2EDE6; color: var(--mu); }
+.five-bar span.huo { background: #F6E3E1; color: var(--huo); }
+.five-bar span.tu { background: #F0E7D6; color: var(--tu); }
+.five-bar span.jin { background: #F3ECCF; color: var(--jin); }
+.five-bar span.shui { background: #DFE8EF; color: var(--shui); }
+
+/* ---------- 排盘依据 ---------- */
+.basis-summary { cursor: pointer; user-select: none; }
+#basis-info { font-size: 13px; color: var(--ink-soft); }
+#basis-info ul { margin: 6px 0; padding-left: 18px; }
+#basis-info li { margin-bottom: 3px; }
+
+/* ---------- 操作按钮 ---------- */
+.actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+
+/* ---------- 历史记录 ---------- */
+.records { list-style: none; margin: 0; padding: 0; }
+.records li {
+  border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px;
+  margin-bottom: 8px; cursor: pointer; background: #FFFDF7;
+}
+.records li:hover { border-color: var(--accent); }
+.records .r-title { font-size: 15px; }
+.records .r-sub { font-size: 12.5px; color: var(--ink-soft); margin-top: 2px; }
+
+.foot { text-align: center; color: var(--ink-soft); font-size: 12px; padding: 0 0 24px; }
+
+/* ---------- 打印 ---------- */
+@media print {
+  body { background: #FFF; }
+  .topbar, .actions, .foot, .nav { display: none !important; }
+  .main { max-width: none; padding: 0; }
+  .view { display: none !important; }
+  #view-chart { display: block !important; }
+  .panel { border: none; padding: 0; margin-bottom: 12px; }
+  .pillar { break-inside: avoid; }
+}
+
+/* ---------- 桌面扩展 ---------- */
+@media (min-width: 768px) {
+  .main { padding: 24px 24px 48px; }
+  .pillars { grid-template-columns: repeat(4, 1fr); }
+  .pillar .p-gan { font-size: 46px; }
+  .aux-grid { grid-template-columns: 1fr 1fr; }
+  .row { flex-wrap: nowrap; }
+}
